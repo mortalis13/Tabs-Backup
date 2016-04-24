@@ -5,7 +5,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 var button,menu,exportMenu,importMenu;
 
-// On browser start, creates menu items
 function loadIntoWindow(window) {
 	var parentId=window.NativeWindow.menu.toolsMenuID
 	exportMenu = window.NativeWindow.menu.add({
@@ -24,18 +23,12 @@ function loadIntoWindow(window) {
 	})	
 }
 
-// On browser close or addon remove, removes menu items
 function unloadFromWindow(window) {
 	if (!window) return;
 	window.NativeWindow.menu.remove(exportMenu);
 	window.NativeWindow.menu.remove(importMenu);
 }
 
-// Exports URLs to a text file
-// The default path is in the 'path' variable
-// First collects all open tabs' URLs in an array
-// Then generates a file name of current date (YMD) and time (HMS)
-// And writes the array of URLs to the file with that name to the default path
 function exportTabs(window){
 	var res=[]
 	window.BrowserApp.tabs.forEach(function(tab){
@@ -82,15 +75,11 @@ function exportTabs(window){
 	window.NativeWindow.toast.show("Tabs exported to: "+path,"long")
 }
 
-// Adds leading 0 to numbers (in date and time) if in range [0..9]
 function formatDate(arg){
 	if(arg<10) arg="0"+arg
 	return arg
 }
 
-// Imports URLs from a text file and opens new tab for each URL
-// First opens dialog window to select the file location
-// Then reads the file and creates new tabs in the browser
 function importTabs(window){
 	let fp = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
 	fp.init(window, "Import Tabs", Ci.nsIFilePicker.modeOpen);
@@ -121,7 +110,6 @@ function importTabs(window){
 	})
 }
 
-// Reads data from the text file and runs callback with the retrieved text
 function fetchData(window,url, onFinish) {
   let xhr = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance(Ci.nsIXMLHttpRequest);
   try {
@@ -142,8 +130,6 @@ function fetchData(window,url, onFinish) {
   
   xhr.send(null);
 }
-
-// ------------------------------------ System functions ------------------------------------
 
 function startup(data, reason) {
   let windows = Services.wm.getEnumerator("navigator:browser");
