@@ -45,7 +45,7 @@ function exportTabs(window){
 	})
 	res=res.join("\r\n")
 	
-	var path="/sdcard/Android/tabs_backup/"
+	var path="/sdcard/Android/data/org.mozilla.firefox/files/tabs_backup/"
 	
 	var d=new Date()
 	try{
@@ -90,7 +90,7 @@ function importTabs(window){
   	if(!selectedFile) return
   	var url=Services.io.newFileURI(selectedFile).spec
   }catch(e){
-    var url="file:///sdcard/Android/tabs_backup/import.txt"
+    var url="file:///sdcard/Android/data/org.mozilla.firefox/files/tabs_backup/import.txt"
   }
 
 	var res=[]
