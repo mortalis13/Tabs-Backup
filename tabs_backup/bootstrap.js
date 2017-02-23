@@ -53,13 +53,7 @@ function exportTabs(window){
 	
 	var d=new Date()
 	try{
-		var date=formatDate(d.getDate())
-		var month=formatDate(d.getMonth()+1)
-		var year=d.getFullYear()
-		var hours=formatDate(d.getHours())
-		var minutes=formatDate(d.getMinutes())
-		var seconds=formatDate(d.getSeconds())
-		var add=""+date+month+year+"_"+hours+minutes+seconds
+		var add=d.toISOString()
 	}catch(e){
 		var add=d.getTime()
 	}
