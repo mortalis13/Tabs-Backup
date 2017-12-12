@@ -33,29 +33,27 @@ function exportTabs(window){
 	var res=[]
 	window.BrowserApp.tabs.forEach(function(tab){
 		var addr=tab.window.location
+		var title=tab.window.document.title
+		if (!title) { title = addr; }
     if(addr!="about:blank" && addr!="about:home")
-      res.push(addr)
+      res.push(title + "\n" + addr)
     else{
       var entries=tab.browser.__SS_data.entries
       var last=entries.length-1
       var zombieAddr=entries[last].url
+      var zombieTitle=entries[last].title
+  		if(!zombieTitle) { zombieTitle = zombieAddr; }
   		if(zombieAddr!="about:blank" && zombieAddr!="about:home")
-  			res.push(zombieAddr)
+  			res.push(zombieTitle + "\n" + zombieAddr)
     }
 	})
-	res=res.join("\r\n")
+	res=res.join("\n\n")
 	
-	var path="/sdcard/Android/tabs_backup/"
+	var path="/sdcard/Android/data/org.mozilla.firefox/files/tabs_backup/"
 	
 	var d=new Date()
 	try{
-		var date=formatDate(d.getDate())
-		var month=formatDate(d.getMonth()+1)
-		var year=d.getFullYear()
-		var hours=formatDate(d.getHours())
-		var minutes=formatDate(d.getMinutes())
-		var seconds=formatDate(d.getSeconds())
-		var add=""+date+month+year+"_"+hours+minutes+seconds
+		var add=d.toISOString()
 	}catch(e){
 		var add=d.getTime()
 	}
@@ -90,12 +88,14 @@ function importTabs(window){
   	if(!selectedFile) return
   	var url=Services.io.newFileURI(selectedFile).spec
   }catch(e){
-    var url="file:///sdcard/Android/tabs_backup/import.txt"
+    var url="file:///sdcard/Android/data/org.mozilla.firefox/files/tabs_backup/import.txt"
   }
 
 	var res=[]
 	fetchData(window,url, function(data){
-    if(/\r\n/.test(data))
+    if (/\n\n/.test(data))
+      var data=data.split(/\n\n/).map(function(s) { s.split(/\n/)[1]; })
+    else if(/\r\n/.test(data))
       var data=data.split(/\r\n/)
     else
 		  var data=data.split(/\n/)
